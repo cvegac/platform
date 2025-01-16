@@ -1,0 +1,25 @@
+name: CI PIpeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Login Dockerhub
+      env:
+        DOCKER_USERNAME: ${{secrets.DOCKER_USER_ORTIZ}}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD_ORTIZ}}
+      run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    
+    - name: Build docker image
+      run: docker build -t platform .
+    - name: Push to Dockerhub
+      run: |
+        docker tag platform:latest cristianortizheano/platform:latest
+        docker push cristianortizheano/platform:latest
